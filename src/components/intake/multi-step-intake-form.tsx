@@ -1,43 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-export type FieldOption = { value: string; label: string };
-
-export type FieldConfig = {
-  name: string;
-  label: string;
-  type: "text" | "email" | "tel" | "textarea" | "radio" | "file";
-  required?: boolean;
-  placeholder?: string;
-  options?: FieldOption[];
-  rows?: number;
-  helpText?: string;
-  showIf?: (data: Record<string, string>) => boolean;
-};
-
-export type StepConfig = {
-  id: string;
-  title: string;
-  description?: string;
-  fields: FieldConfig[];
-};
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function validateField(field: FieldConfig, value: string): string | null {
-  if (field.type === "file") return null;
-  if (field.name === "state" && value === "other") {
-    return "We currently only work with landowners in Texas and Oklahoma.";
-  }
-  if (field.required && !value.trim()) {
-    return "This field is required.";
-  }
-  if (field.type === "email" && value && !EMAIL_PATTERN.test(value)) {
-    return "Enter a valid email address.";
-  }
-  return null;
-}
+import { validateField, type FieldConfig, type StepConfig } from "@/lib/intake/schema";
 
 function FieldRenderer({
   field,
@@ -131,6 +95,8 @@ function FieldRenderer({
   );
 }
 
+const FALLBACK_CONTACT_EMAIL = "hayeslegalsolutions@hayeslegalsolutions.com";
+
 export function MultiStepIntakeForm({
   steps,
   track,
@@ -144,7 +110,9 @@ export function MultiStepIntakeForm({
   const [data, setData] = useState<Record<string, string>>({});
   const [files, setFiles] = useState<Record<string, File | null>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [honeypot, setHoneypot] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const step = steps[stepIndex];
   const visibleFields = step.fields.filter((f) => !f.showIf || f.showIf(data));
@@ -182,21 +150,44 @@ export function MultiStepIntakeForm({
     setStepIndex((i) => Math.max(0, i - 1));
   }
 
+  function stepIndexForField(name: string): number {
+    return steps.findIndex((s) => s.fields.some((f) => f.name === name));
+  }
+
   async function handleSubmit() {
     if (!validateStep()) return;
     setStatus("submitting");
+    setErrorMessage("");
     try {
       const formData = new FormData();
       formData.append("track", track);
+      formData.append("company", honeypot);
       Object.entries(data).forEach(([key, value]) => formData.append(key, value));
       Object.entries(files).forEach(([key, file]) => {
         if (file) formData.append(key, file);
       });
+
       const res = await fetch("/api/intake", { method: "POST", body: formData });
-      if (!res.ok) throw new Error("Request failed");
-      setStatus("success");
-    } catch {
+      const body = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        setStatus("success");
+        return;
+      }
+
+      if (res.status === 400 && body.errors) {
+        setErrors((e) => ({ ...e, ...body.errors }));
+        const firstField = Object.keys(body.errors)[0];
+        const idx = stepIndexForField(firstField);
+        if (idx >= 0) setStepIndex(idx);
+        setStatus("idle");
+        return;
+      }
+
+      throw new Error(body.message);
+    } catch (err) {
       setStatus("error");
+      setErrorMessage(err instanceof Error && err.message ? err.message : "");
     }
   }
 
@@ -233,6 +224,22 @@ export function MultiStepIntakeForm({
       <div className="rounded-lg border border-line bg-white p-6 sm:p-8">
         {step.description && <p className="mb-6 text-sm text-ink-muted">{step.description}</p>}
 
+        {/* Honeypot: real users never see or fill this. Left populated only by bots. */}
+        <div
+          aria-hidden="true"
+          style={{ position: "absolute", left: "-9999px", width: 1, height: 1, overflow: "hidden" }}
+        >
+          <label htmlFor="company">Leave this field blank</label>
+          <input
+            id="company"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+          />
+        </div>
+
         <div className="space-y-6">
           {visibleFields.map((field) => (
             <FieldRenderer
@@ -249,7 +256,12 @@ export function MultiStepIntakeForm({
 
         {status === "error" && (
           <p className="mt-6 text-sm font-medium text-signal-dark">
-            Something went wrong submitting your intake. Please try again.
+            {errorMessage || "Something went wrong submitting your intake."} Please try
+            again, or reach us directly at{" "}
+            <a href={`mailto:${FALLBACK_CONTACT_EMAIL}`} className="underline">
+              {FALLBACK_CONTACT_EMAIL}
+            </a>
+            .
           </p>
         )}
 
