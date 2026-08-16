@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { SignalMark } from "@/components/ui/signal-mark";
-import { footerLinks, intakeLinks, siteConfig } from "@/lib/site";
+import { footerLinks, intakeLinks, legalLinks, siteConfig } from "@/lib/site";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -48,10 +48,17 @@ export function SiteFooter() {
       </Container>
 
       <div className="border-t border-white/15">
-        <Container className="flex flex-col gap-1 py-4 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
+        <Container className="flex flex-col gap-3 py-4 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
             &copy; {year} {siteConfig.parentCompany}. All rights reserved.
           </p>
+          <div className="flex gap-4">
+            {legalLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="hover:text-white">
+                {link.label}
+              </Link>
+            ))}
+          </div>
           <p>{siteConfig.name} does not provide legal advice.</p>
         </Container>
       </div>

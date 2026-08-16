@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { Resend } from "resend";
 import { stripe } from "@/lib/stripe";
-import { getProductBySlug } from "@/lib/products";
-import { buildDownloadEmail, buildOrderNotificationEmail, type FulfillmentItem } from "@/lib/shop/email-template";
+import { getOrderItems } from "@/lib/shop/order-items";
+import { buildDownloadEmail, buildOrderNotificationEmail } from "@/lib/shop/email-template";
 
 const DEFAULT_ORDER_EMAIL = "hayeslegalsolutions@hayeslegalsolutions.com";
 
@@ -49,17 +49,7 @@ async function fulfillOrder(sessionId: string, origin: string) {
     expand: ["line_items.data.price.product"],
   });
 
-  const items: FulfillmentItem[] = (session.line_items?.data ?? [])
-    .map((lineItem) => {
-      const productData = lineItem.price?.product;
-      const slug =
-        productData && typeof productData !== "string" && !productData.deleted
-          ? productData.metadata?.slug
-          : undefined;
-      const product = slug ? getProductBySlug(slug) : undefined;
-      return product ? { product, quantity: lineItem.quantity ?? 1 } : null;
-    })
-    .filter((i): i is FulfillmentItem => i !== null);
+  const items = getOrderItems(session);
 
   if (items.length === 0) {
     console.error("[stripe webhook] no recognizable items on session", { sessionId });
@@ -91,7 +81,8 @@ async function fulfillOrder(sessionId: string, origin: string) {
   const buyerEmail = session.customer_details?.email;
 
   if (pdfItems.length > 0 && buyerEmail) {
-    const download = buildDownloadEmail({ items: pdfItems, origin });
+    const bundleUrl = `${origin}/api/downloads/${session.id}`;
+    const download = buildDownloadEmail({ items: pdfItems, bundleUrl });
     await resend.emails.send({
       from: fromAddress,
       to: buyerEmail,

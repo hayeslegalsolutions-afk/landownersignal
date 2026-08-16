@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { validateField, type FieldConfig, type StepConfig } from "@/lib/intake/schema";
+import { TermsCheckbox } from "@/components/ui/terms-checkbox";
 
 function FieldRenderer({
   field,
@@ -111,6 +112,8 @@ export function MultiStepIntakeForm({
   const [files, setFiles] = useState<Record<string, File | null>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [honeypot, setHoneypot] = useState("");
+  const [agreed, setAgreed] = useState(false);
+  const [agreedError, setAgreedError] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -156,12 +159,17 @@ export function MultiStepIntakeForm({
 
   async function handleSubmit() {
     if (!validateStep()) return;
+    if (!agreed) {
+      setAgreedError(true);
+      return;
+    }
     setStatus("submitting");
     setErrorMessage("");
     try {
       const formData = new FormData();
       formData.append("track", track);
       formData.append("company", honeypot);
+      formData.append("agreed", String(agreed));
       Object.entries(data).forEach(([key, value]) => formData.append(key, value));
       Object.entries(files).forEach(([key, file]) => {
         if (file) formData.append(key, file);
@@ -176,9 +184,11 @@ export function MultiStepIntakeForm({
       }
 
       if (res.status === 400 && body.errors) {
-        setErrors((e) => ({ ...e, ...body.errors }));
-        const firstField = Object.keys(body.errors)[0];
-        const idx = stepIndexForField(firstField);
+        const { agreed: agreedErrorMessage, ...fieldErrors } = body.errors;
+        if (agreedErrorMessage) setAgreedError(true);
+        setErrors((e) => ({ ...e, ...fieldErrors }));
+        const firstField = Object.keys(fieldErrors)[0];
+        const idx = firstField ? stepIndexForField(firstField) : steps.length - 1;
         if (idx >= 0) setStepIndex(idx);
         setStatus("idle");
         return;
@@ -253,6 +263,18 @@ export function MultiStepIntakeForm({
             />
           ))}
         </div>
+
+        {isLastStep && (
+          <TermsCheckbox
+            checked={agreed}
+            onChange={(v) => {
+              setAgreed(v);
+              setAgreedError(false);
+            }}
+            error={agreedError}
+            className="mt-6"
+          />
+        )}
 
         {status === "error" && (
           <p className="mt-6 text-sm font-medium text-signal-dark">

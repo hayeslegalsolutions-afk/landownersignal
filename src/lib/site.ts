@@ -98,3 +98,8 @@ export const intakeLinks: NavLink[] = [
 ];
 
 export const footerLinks: NavLink[] = [...primaryNav, ...secondaryNav];
+
+export const legalLinks: NavLink[] = [
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms of Use", href: "/terms-of-use" },
+];

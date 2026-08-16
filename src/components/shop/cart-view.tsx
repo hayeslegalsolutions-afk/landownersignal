@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { TermsCheckbox } from "@/components/ui/terms-checkbox";
 import { ProductCover } from "@/components/shop/product-cover";
 import { useCart, type CartItem } from "@/lib/cart/cart-context";
 import { getProductBySlug, type Product } from "@/lib/products";
@@ -15,6 +16,8 @@ export function CartView() {
   const { items, hydrated, removeItem, setQuantity } = useCart();
   const [checkingOut, setCheckingOut] = useState(false);
   const [error, setError] = useState("");
+  const [agreed, setAgreed] = useState(false);
+  const [agreedError, setAgreedError] = useState(false);
 
   if (!hydrated) {
     return <p className="text-sm text-ink-muted">Loading your cart…</p>;
@@ -41,13 +44,17 @@ export function CartView() {
   const subtotal = lines.reduce((sum, { item, product }) => sum + product.price * item.quantity, 0);
 
   async function handleCheckout() {
+    if (!agreed) {
+      setAgreedError(true);
+      return;
+    }
     setCheckingOut(true);
     setError("");
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: lines.map(({ item }) => item) }),
+        body: JSON.stringify({ items: lines.map(({ item }) => item), agreed }),
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok || !body.url) throw new Error(body.error);
@@ -134,7 +141,15 @@ export function CartView() {
         <p className="text-xl font-bold text-ink">Subtotal: ${subtotal.toFixed(2)}</p>
       </div>
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex flex-col items-end gap-4">
+        <TermsCheckbox
+          checked={agreed}
+          onChange={(v) => {
+            setAgreed(v);
+            setAgreedError(false);
+          }}
+          error={agreedError}
+        />
         <Button onClick={handleCheckout} disabled={checkingOut}>
           {checkingOut ? "Redirecting…" : "Checkout"}
         </Button>

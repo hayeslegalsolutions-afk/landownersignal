@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { TermsCheckbox } from "@/components/ui/terms-checkbox";
 import { useCart } from "@/lib/cart/cart-context";
 import type { Product } from "@/lib/products";
 
@@ -15,6 +16,8 @@ export function ProductActions({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
   const [buying, setBuying] = useState(false);
   const [error, setError] = useState("");
+  const [agreed, setAgreed] = useState(false);
+  const [agreedError, setAgreedError] = useState(false);
 
   const isBook = product.type === "book";
 
@@ -25,6 +28,10 @@ export function ProductActions({ product }: { product: Product }) {
   }
 
   async function handleBuyNow() {
+    if (!agreed) {
+      setAgreedError(true);
+      return;
+    }
     setBuying(true);
     setError("");
     try {
@@ -33,6 +40,7 @@ export function ProductActions({ product }: { product: Product }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: [{ slug: product.slug, quantity: isBook ? quantity : 1 }],
+          agreed,
         }),
       });
       const body = await res.json().catch(() => ({}));
@@ -74,6 +82,16 @@ export function ProductActions({ product }: { product: Product }) {
           </div>
         </div>
       )}
+
+      <TermsCheckbox
+        checked={agreed}
+        onChange={(v) => {
+          setAgreed(v);
+          setAgreedError(false);
+        }}
+        error={agreedError}
+        className="mb-4"
+      />
 
       <div className="flex flex-wrap items-center gap-3">
         <Button onClick={handleBuyNow} disabled={buying} variant="primary">

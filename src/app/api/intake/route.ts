@@ -27,6 +27,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "Unknown intake form." }, { status: 400 });
   }
 
+  if (formData.get("agreed") !== "true") {
+    return NextResponse.json(
+      { ok: false, errors: { agreed: "You must agree to the Terms of Use and Privacy Policy." } },
+      { status: 400 }
+    );
+  }
+
   const steps = trackSteps[track];
 
   const data: Record<string, string> = {};
@@ -34,7 +41,7 @@ export async function POST(request: Request) {
   for (const [key, value] of formData.entries()) {
     if (value instanceof File) {
       if (value.size > 0) file = value;
-    } else if (key !== "track" && key !== "company") {
+    } else if (key !== "track" && key !== "company" && key !== "agreed") {
       data[key] = value;
     }
   }

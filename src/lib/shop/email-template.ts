@@ -1,7 +1,7 @@
 import type Stripe from "stripe";
-import type { Product } from "@/lib/products";
+import type { FulfillmentItem } from "@/lib/shop/types";
 
-export type FulfillmentItem = { product: Product; quantity: number };
+export type { FulfillmentItem };
 
 function escapeHtml(value: string): string {
   return value
@@ -87,24 +87,21 @@ export function buildOrderNotificationEmail({
   return { subject, html, text };
 }
 
-/** Sent to the buyer as a backup to the on-page download links, PDF items only. */
+/** Sent to the buyer as a backup to the on-page download link — one bundled PDF for every checklist in the order. */
 export function buildDownloadEmail({
   items,
-  origin,
+  bundleUrl,
 }: {
   items: FulfillmentItem[];
-  origin: string;
+  bundleUrl: string;
 }): { subject: string; html: string; text: string } {
   const subject =
-    items.length === 1 ? `Your download: ${items[0].product.title}` : "Your downloads are ready";
+    items.length === 1
+      ? `Your download: ${items[0].product.title}`
+      : "Your checklist bundle is ready";
 
-  const linksHtml = items
-    .map(
-      (i) => `
-        <li style="margin-bottom:10px;">
-          <a href="${origin}/downloads/${i.product.slug}.pdf" style="color:#B4502A; font-weight:600;">${escapeHtml(i.product.title)}</a>
-        </li>`
-    )
+  const itemsListHtml = items
+    .map((i) => `<li style="margin-bottom:4px;">${escapeHtml(i.product.title)}</li>`)
     .join("");
 
   const html = `
@@ -113,8 +110,9 @@ export function buildDownloadEmail({
         <h1 style="color:#ffffff; font-size:20px; margin:0;">Thanks for your order</h1>
       </div>
       <div style="padding:24px; background:#F7F5F0;">
-        <p style="margin:0 0 16px; font-size:14px; color:#101E2B;">Here's a backup copy of your download link(s), in case you need them again later:</p>
-        <ul style="padding-left:18px; margin:0;">${linksHtml}</ul>
+        <p style="margin:0 0 12px; font-size:14px; color:#101E2B;">Here's a backup copy of your download link, in case you need it again later. Your checklist${items.length > 1 ? "s are" : " is"} bundled into one PDF:</p>
+        <ul style="padding-left:18px; margin:0 0 16px; color:#101E2B; font-size:14px;">${itemsListHtml}</ul>
+        <p style="margin:0 0 16px;"><a href="${bundleUrl}" style="color:#B4502A; font-weight:600;">Download your checklist bundle →</a></p>
         <p style="margin-top:20px; font-size:13px; color:#5B6B7A;">Questions about your order? Just reply to this email.</p>
       </div>
     </div>
@@ -123,8 +121,10 @@ export function buildDownloadEmail({
   const text = [
     "Thanks for your order.",
     "",
-    "Your download link(s):",
-    ...items.map((i) => `${i.product.title}: ${origin}/downloads/${i.product.slug}.pdf`),
+    `Your checklist${items.length > 1 ? "s" : ""}:`,
+    ...items.map((i) => `- ${i.product.title}`),
+    "",
+    `Download your bundle: ${bundleUrl}`,
   ].join("\n");
 
   return { subject, html, text };

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { getProductBySlug } from "@/lib/products";
+import { TAX_CODES } from "@/lib/shop/tax";
 
 type CartPayloadItem = { slug?: unknown; quantity?: unknown };
 
@@ -11,6 +12,13 @@ export async function POST(request: Request) {
 
   if (!Array.isArray(rawItems) || rawItems.length === 0) {
     return NextResponse.json({ error: "Your cart is empty." }, { status: 400 });
+  }
+
+  if (body?.agreed !== true) {
+    return NextResponse.json(
+      { error: "You must agree to the Terms of Use and Privacy Policy to check out." },
+      { status: 400 }
+    );
   }
 
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
@@ -41,9 +49,13 @@ export async function POST(request: Request) {
       price_data: {
         currency: "usd",
         unit_amount: Math.round(product.price * 100),
+        // Prices are tax-exclusive: Stripe Tax adds tax on top of this
+        // amount rather than treating it as tax-included.
+        tax_behavior: "exclusive",
         product_data: {
           name: product.title,
           description: product.shortDescription,
+          tax_code: TAX_CODES[product.type],
           metadata: { slug: product.slug, type: product.type },
         },
       },
@@ -66,10 +78,11 @@ export async function POST(request: Request) {
       line_items: lineItems,
       success_url: `${origin}/shop/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/shop/cart`,
-      // Tax: enable once Stripe Tax is configured in the dashboard
-      // (Settings > Tax > add an origin address and registrations), otherwise
-      // this will error or calculate $0 tax everywhere.
-      // automatic_tax: { enabled: true },
+      // Requires Stripe Tax to be activated with an origin address and at
+      // least one tax registration in the dashboard (Settings > Tax) —
+      // session creation will fail until that's configured. See the Stripe
+      // Tax setup notes shared alongside this change.
+      automatic_tax: { enabled: true },
       ...(hasBook
         ? {
             shipping_address_collection: { allowed_countries: ["US"] },
@@ -78,6 +91,7 @@ export async function POST(request: Request) {
                 shipping_rate_data: {
                   type: "fixed_amount",
                   fixed_amount: { amount: 499, currency: "usd" },
+                  tax_behavior: "exclusive",
                   display_name: "Standard Shipping",
                   delivery_estimate: {
                     minimum: { unit: "business_day", value: 3 },
