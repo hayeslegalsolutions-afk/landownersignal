@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 type ButtonProps = {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "inverse";
   className?: string;
 } & (
   | { href: string; type?: never; onClick?: never; disabled?: boolean }
@@ -17,6 +17,8 @@ const variants = {
   primary: "bg-brand px-5 py-2.5 text-white hover:bg-brand-dark",
   secondary: "border-2 border-ink px-5 py-2.5 text-ink hover:bg-paper-tint",
   ghost: "px-0 py-0 text-brand underline-offset-4 hover:underline",
+  // For use on dark (brand-tone) sections, where primary/secondary lack contrast.
+  inverse: "bg-white px-5 py-2.5 text-brand hover:bg-paper-tint",
 };
 
 export function Button({ children, variant = "primary", className = "", ...props }: ButtonProps) {

@@ -11,13 +11,15 @@ export function Section({
   children,
   tone = "paper",
   className = "",
+  id,
 }: {
   children: ReactNode;
   tone?: "paper" | "tint" | "brand";
   className?: string;
+  id?: string;
 }) {
   return (
-    <section className={`py-16 sm:py-20 ${toneClasses[tone]} ${className}`}>
+    <section id={id} className={`py-16 sm:py-20 ${toneClasses[tone]} ${className}`}>
       <Container>{children}</Container>
     </section>
   );
