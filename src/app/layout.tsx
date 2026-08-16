@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `${siteConfig.name} | Landman Negotiation Help for Mineral & Surface Owners`,
+    default: `${siteConfig.name} | Lease & Offer Review for Texas & Oklahoma Landowners`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,

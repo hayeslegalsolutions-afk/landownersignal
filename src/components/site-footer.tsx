@@ -6,29 +6,21 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-slate-200 bg-slate-950 text-slate-300">
-      <Container className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="lg:col-span-2">
-          <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-emerald-700 text-sm font-bold text-white">
-              LS
-            </span>
-            <span className="text-lg font-semibold text-white">{siteConfig.name}</span>
-          </div>
-          <p className="mt-4 max-w-sm text-sm leading-6 text-slate-400">
-            {siteConfig.description}
-          </p>
-          <p className="mt-4 text-xs text-slate-500">
-            {siteConfig.name} is a service of {siteConfig.parentCompany}.
+    <footer className="border-t border-slate-300">
+      <Container className="grid gap-8 py-10 sm:grid-cols-3">
+        <div>
+          <p className="font-semibold">{siteConfig.name}</p>
+          <p className="mt-2 max-w-xs text-sm text-slate-600">
+            A service of {siteConfig.parentCompany}.
           </p>
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold text-white">Site</h3>
-          <ul className="mt-4 space-y-2">
+          <p className="text-sm font-semibold">Site</p>
+          <ul className="mt-2 space-y-1">
             {footerLinks.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} className="text-sm text-slate-400 hover:text-white">
+                <Link href={link.href} className="text-sm text-slate-600 hover:underline">
                   {link.label}
                 </Link>
               </li>
@@ -37,11 +29,11 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold text-white">Start an Intake</h3>
-          <ul className="mt-4 space-y-2">
+          <p className="text-sm font-semibold">Start an Intake</p>
+          <ul className="mt-2 space-y-1">
             {intakeLinks.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} className="text-sm text-slate-400 hover:text-white">
+                <Link href={link.href} className="text-sm text-slate-600 hover:underline">
                   {link.label}
                 </Link>
               </li>
@@ -50,15 +42,12 @@ export function SiteFooter() {
         </div>
       </Container>
 
-      <div className="border-t border-slate-800">
-        <Container className="flex flex-col gap-2 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-t border-slate-300">
+        <Container className="flex flex-col gap-1 py-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>
             &copy; {year} {siteConfig.parentCompany}. All rights reserved.
           </p>
-          <p>
-            {siteConfig.name} does not provide legal advice. Information on this site is
-            educational and does not create an attorney-client relationship.
-          </p>
+          <p>{siteConfig.name} does not provide legal advice.</p>
         </Container>
       </div>
     </footer>

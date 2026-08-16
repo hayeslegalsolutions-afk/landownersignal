@@ -3,91 +3,56 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Container } from "@/components/container";
-import { primaryNav, siteConfig } from "@/lib/site";
+import { primaryNav, secondaryNav, siteConfig } from "@/lib/site";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <Container className="flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-          <span className="flex h-9 w-9 items-center justify-center rounded-md bg-emerald-800 text-sm font-bold text-white">
-            LS
-          </span>
-          <span className="text-lg font-semibold tracking-tight text-slate-900">
-            {siteConfig.name}
-          </span>
+    <header className="border-b border-slate-300">
+      <Container className="flex flex-wrap items-center justify-between gap-4 py-4">
+        <Link href="/" className="text-lg font-bold" onClick={() => setOpen(false)}>
+          {siteConfig.name}
         </Link>
-
-        <nav className="hidden items-center gap-6 lg:flex">
-          {primaryNav.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-emerald-800"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden lg:flex">
-          <Link
-            href="/intake/mineral-owner"
-            className="rounded-md bg-emerald-800 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
-          >
-            Start My Review
-          </Link>
-        </div>
 
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-md p-2 text-slate-700 lg:hidden"
+          className="rounded border border-slate-300 px-3 py-1 text-sm md:hidden"
           aria-expanded={open}
           aria-label="Toggle navigation menu"
           onClick={() => setOpen((v) => !v)}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.8}
-          >
-            {open ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
-            )}
-          </svg>
+          Menu
         </button>
-      </Container>
 
-      {open && (
-        <div className="border-t border-slate-200 bg-white lg:hidden">
-          <Container className="flex flex-col gap-1 py-4">
+        <div className={`${open ? "flex" : "hidden"} w-full flex-col gap-3 md:flex md:w-auto md:flex-row md:items-center md:gap-6`}>
+          <nav aria-label="Tracks" className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
             {primaryNav.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-800"
+                className="text-sm font-semibold text-slate-900 underline-offset-4 hover:underline"
                 onClick={() => setOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/intake/mineral-owner"
-              className="mt-2 rounded-md bg-emerald-800 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-emerald-700"
-              onClick={() => setOpen(false)}
-            >
-              Start My Review
-            </Link>
-          </Container>
+          </nav>
+          <span className="hidden text-slate-300 md:inline">|</span>
+          <nav aria-label="Site" className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
+            {secondaryNav.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm text-slate-600 hover:text-slate-900 hover:underline"
+                onClick={() => setOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
         </div>
-      )}
+      </Container>
     </header>
   );
 }
