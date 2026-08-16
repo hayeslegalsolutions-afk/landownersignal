@@ -1,35 +1,29 @@
 import type { Metadata } from "next";
+import { Hero } from "@/components/ui/hero";
 import { Container } from "@/components/container";
-import { PageHero } from "@/components/page-hero";
-import { PlaceholderNotice } from "@/components/placeholder-notice";
-import { IntakeForm } from "@/components/intake-form";
+import { TrackBadge } from "@/components/ui/track-badge";
+import { SolarForm } from "@/components/intake/forms/solar-form";
 
 export const metadata: Metadata = {
   title: "Solar Intake",
-  description: "Start a review of a solar lease agreement.",
+  description: "Start a review of a solar lease or option agreement.",
 };
 
 export default function SolarIntakePage() {
   return (
     <>
-      <PageHero
-        eyebrow="Intake · Solar"
+      <Hero
+        eyebrow={
+          <div className="flex items-center gap-3">
+            <TrackBadge track="solar" />
+            <span className="text-sm font-semibold text-ink-muted">Intake</span>
+          </div>
+        }
         title="Solar intake"
-        description="Tell us about the solar lease agreement you've received."
+        description="Tell us about the solar lease or option agreement you've received — takes about three minutes."
       />
-      <Container className="max-w-2xl pb-16">
-        <PlaceholderNotice note="This intake form is not yet connected to a backend or file upload." />
-        <IntakeForm
-          documentTypeLabel="What do you need reviewed?"
-          documentTypeOptions={[
-            { value: "solar-lease-offer", label: "Solar lease offer" },
-            { value: "option-agreement", label: "Option to lease agreement" },
-            { value: "existing-lease", label: "Existing lease I already signed" },
-            { value: "access-request", label: "Access request, no paperwork yet" },
-            { value: "other", label: "Other" },
-          ]}
-          detailsPlaceholder="Who contacted you, what were you offered, and what questions do you have?"
-        />
+      <Container className="max-w-2xl py-12">
+        <SolarForm />
       </Container>
     </>
   );

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { Hero } from "@/components/ui/hero";
 import { Container } from "@/components/container";
-import { PageHero } from "@/components/page-hero";
-import { PlaceholderNotice } from "@/components/placeholder-notice";
-import { IntakeForm } from "@/components/intake-form";
+import { TrackBadge } from "@/components/ui/track-badge";
+import { OilGasSurfaceOwnerForm } from "@/components/intake/forms/oil-gas-surface-owner-form";
 
 export const metadata: Metadata = {
   title: "Oil & Gas Surface Owner Intake",
@@ -12,24 +12,18 @@ export const metadata: Metadata = {
 export default function OilGasSurfaceOwnerIntakePage() {
   return (
     <>
-      <PageHero
-        eyebrow="Intake · Oil & Gas"
+      <Hero
+        eyebrow={
+          <div className="flex items-center gap-3">
+            <TrackBadge track="oil-gas" />
+            <span className="text-sm font-semibold text-ink-muted">Intake</span>
+          </div>
+        }
         title="Surface owner intake"
-        description="Tell us about the surface use agreement, easement, or access request you've received."
+        description="Tell us about the surface use agreement or access request you've received — takes about three minutes."
       />
-      <Container className="max-w-2xl pb-16">
-        <PlaceholderNotice note="This intake form is not yet connected to a backend or file upload." />
-        <IntakeForm
-          documentTypeLabel="What do you need reviewed?"
-          documentTypeOptions={[
-            { value: "surface-use-agreement", label: "Surface use agreement" },
-            { value: "pipeline-easement", label: "Pipeline / right-of-way easement" },
-            { value: "damages-claim", label: "Damages claim or compensation offer" },
-            { value: "access-request", label: "Access request, no paperwork yet" },
-            { value: "other", label: "Other" },
-          ]}
-          detailsPlaceholder="Who contacted you, what access or activity is planned, and what questions do you have?"
-        />
+      <Container className="max-w-2xl py-12">
+        <OilGasSurfaceOwnerForm />
       </Container>
     </>
   );

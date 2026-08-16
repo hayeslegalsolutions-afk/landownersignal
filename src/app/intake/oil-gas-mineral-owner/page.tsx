@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { Hero } from "@/components/ui/hero";
 import { Container } from "@/components/container";
-import { PageHero } from "@/components/page-hero";
-import { PlaceholderNotice } from "@/components/placeholder-notice";
-import { IntakeForm } from "@/components/intake-form";
+import { TrackBadge } from "@/components/ui/track-badge";
+import { OilGasMineralOwnerForm } from "@/components/intake/forms/oil-gas-mineral-owner-form";
 
 export const metadata: Metadata = {
   title: "Oil & Gas Mineral Owner Intake",
@@ -12,25 +12,18 @@ export const metadata: Metadata = {
 export default function OilGasMineralOwnerIntakePage() {
   return (
     <>
-      <PageHero
-        eyebrow="Intake · Oil & Gas"
+      <Hero
+        eyebrow={
+          <div className="flex items-center gap-3">
+            <TrackBadge track="oil-gas" />
+            <span className="text-sm font-semibold text-ink-muted">Intake</span>
+          </div>
+        }
         title="Mineral owner intake"
-        description="Tell us about your lease, offer, or division order so we can help you understand it."
+        description="Tell us about your lease, offer, or division order — takes about three minutes."
       />
-      <Container className="max-w-2xl pb-16">
-        <PlaceholderNotice note="This intake form is not yet connected to a backend or file upload." />
-        <IntakeForm
-          documentTypeLabel="What do you need reviewed?"
-          documentTypeOptions={[
-            { value: "lease-offer", label: "New lease offer" },
-            { value: "top-lease", label: "Top-lease offer" },
-            { value: "division-order", label: "Division order" },
-            { value: "existing-lease", label: "Existing lease I already signed" },
-            { value: "inherited", label: "Inherited minerals, no documents yet" },
-            { value: "other", label: "Other" },
-          ]}
-          detailsPlaceholder="Who contacted you, what were you offered, and what questions do you have?"
-        />
+      <Container className="max-w-2xl py-12">
+        <OilGasMineralOwnerForm />
       </Container>
     </>
   );

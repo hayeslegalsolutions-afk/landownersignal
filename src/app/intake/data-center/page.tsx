@@ -1,35 +1,29 @@
 import type { Metadata } from "next";
+import { Hero } from "@/components/ui/hero";
 import { Container } from "@/components/container";
-import { PageHero } from "@/components/page-hero";
-import { PlaceholderNotice } from "@/components/placeholder-notice";
-import { IntakeForm } from "@/components/intake-form";
+import { TrackBadge } from "@/components/ui/track-badge";
+import { DataCenterForm } from "@/components/intake/forms/data-center-form";
 
 export const metadata: Metadata = {
   title: "Data Center Intake",
-  description: "Start a review of a data center land lease or easement offer.",
+  description: "Start a review of a data center land lease, purchase offer, or easement.",
 };
 
 export default function DataCenterIntakePage() {
   return (
     <>
-      <PageHero
-        eyebrow="Intake · Data Centers"
+      <Hero
+        eyebrow={
+          <div className="flex items-center gap-3">
+            <TrackBadge track="data-centers" />
+            <span className="text-sm font-semibold text-ink-muted">Intake</span>
+          </div>
+        }
         title="Data center intake"
-        description="Tell us about the land lease or easement offer you've received from a data center developer."
+        description="Tell us about the land lease, purchase offer, or easement you've been approached about — takes about three minutes."
       />
-      <Container className="max-w-2xl pb-16">
-        <PlaceholderNotice note="This intake form is not yet connected to a backend or file upload." />
-        <IntakeForm
-          documentTypeLabel="What do you need reviewed?"
-          documentTypeOptions={[
-            { value: "land-lease-offer", label: "Land lease offer" },
-            { value: "easement-offer", label: "Easement offer" },
-            { value: "option-agreement", label: "Option to lease agreement" },
-            { value: "access-request", label: "Access request, no paperwork yet" },
-            { value: "other", label: "Other" },
-          ]}
-          detailsPlaceholder="Who contacted you, what were you offered, and what questions do you have?"
-        />
+      <Container className="max-w-2xl py-12">
+        <DataCenterForm />
       </Container>
     </>
   );
