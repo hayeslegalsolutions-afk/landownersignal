@@ -1,18 +1,60 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  /* Ink & paper: warm, low-contrast-with-nothing neutrals instead of pure black/white. */
+  --ink: #101e2b;
+  --ink-muted: #5b6b7a;
+  --paper: #f7f5f0;
+  --paper-tint: #efeae0;
+  --line: #ddd5c7;
+
+  /* Brand: deep navy doubles as primary text and primary action color. */
+  --brand: #101e2b;
+  --brand-dark: #0a1620;
+  --brand-tint: #e4e8eb;
+
+  /* Signal: warm rust used for alerts, callouts, and emphasis accents. */
+  --signal: #b4502a;
+  --signal-dark: #8f3f20;
+  --signal-tint: #f5e6de;
+
+  /* Track colors: distinguish oil & gas / data centers / solar content. */
+  --track-oil: #6b4226;
+  --track-oil-tint: #efe6db;
+  --track-data: #3e6270;
+  --track-data-tint: #e6edee;
+  --track-solar: #9c5c1a;
+  --track-solar-tint: #f3e6d3;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-paper: var(--paper);
+  --color-paper-tint: var(--paper-tint);
+  --color-line: var(--line);
+
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-tint: var(--brand-tint);
+
+  --color-signal: var(--signal);
+  --color-signal-dark: var(--signal-dark);
+  --color-signal-tint: var(--signal-tint);
+
+  --color-track-oil: var(--track-oil);
+  --color-track-oil-tint: var(--track-oil-tint);
+  --color-track-data: var(--track-data);
+  --color-track-data-tint: var(--track-data-tint);
+  --color-track-solar: var(--track-solar);
+  --color-track-solar-tint: var(--track-solar-tint);
+
   --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-display-serif);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--ink);
 }
