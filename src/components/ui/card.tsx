@@ -4,15 +4,18 @@ import type { ReactNode } from "react";
 export function Card({
   children,
   href,
+  padded = true,
   className = "",
 }: {
   children: ReactNode;
   href?: string;
+  /** Set false for cards with edge-to-edge content (e.g. a cover image); apply padding to inner content instead. */
+  padded?: boolean;
   className?: string;
 }) {
-  const classes = `block rounded-lg border border-line bg-white p-6 transition-colors ${
-    href ? "hover:border-brand" : ""
-  } ${className}`;
+  const classes = `block overflow-hidden rounded-lg border border-line bg-white transition-colors ${
+    padded ? "p-6" : ""
+  } ${href ? "hover:border-brand" : ""} ${className}`;
 
   if (href) {
     return (

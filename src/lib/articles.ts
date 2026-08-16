@@ -1,4 +1,6 @@
-export type ArticleTrack = "oil-gas" | "data-centers" | "solar" | "general";
+import type { Track } from "@/lib/track";
+
+export type ArticleTrack = Track;
 
 // A small block model instead of raw JSX or MDX, so an article's content is
 // plain data (easy to add to or hand off to a non-developer) while the page

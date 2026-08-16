@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArticleTrackTag } from "@/components/education/article-track-tag";
+import { TrackTag } from "@/components/ui/track-tag";
 import type { ArticleTrack } from "@/lib/articles";
 
 export type ArticleSummary = {
@@ -54,7 +54,7 @@ export function ArticleFilter({ articles }: { articles: ArticleSummary[] }) {
         {visible.map((article) => (
           <Card key={article.slug} href={`/education/${article.slug}`} className="flex flex-col">
             <div className="flex items-center justify-between gap-2">
-              <ArticleTrackTag track={article.track} />
+              <TrackTag track={article.track} />
               {!article.hasContent && <Badge tone="neutral">Coming soon</Badge>}
             </div>
             <h3 className="mt-4 font-semibold text-ink">{article.title}</h3>

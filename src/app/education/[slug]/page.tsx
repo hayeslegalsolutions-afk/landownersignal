@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Container } from "@/components/container";
-import { ArticleTrackTag } from "@/components/education/article-track-tag";
+import { TrackTag } from "@/components/ui/track-tag";
 import { ArticleBody } from "@/components/education/article-body";
 import { articles, getArticleBySlug } from "@/lib/articles";
 
@@ -37,7 +37,7 @@ export default async function ArticlePage({
       </Link>
 
       <div className="mt-6">
-        <ArticleTrackTag track={article.track} />
+        <TrackTag track={article.track} />
       </div>
       <h1 className="mt-4 font-serif text-3xl font-semibold leading-tight text-ink sm:text-4xl">
         {article.title}
