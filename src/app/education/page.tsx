@@ -1,35 +1,34 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/container";
-import { PageHero } from "@/components/page-hero";
-import { PlaceholderNotice } from "@/components/placeholder-notice";
-import { tracks } from "@/lib/site";
+import { Hero } from "@/components/ui/hero";
+import { Section } from "@/components/ui/section";
+import { ArticleFilter } from "@/components/education/article-filter";
+import { articles } from "@/lib/articles";
 
 export const metadata: Metadata = {
   title: "Education",
   description:
-    "Guides and articles on oil & gas, data center, and solar lease terms and common company tactics, organized by track.",
+    "Guides on oil & gas, data center, and solar lease terms and common company tactics for Texas and Oklahoma landowners.",
 };
 
 export default function EducationPage() {
+  const summaries = articles.map((a) => ({
+    slug: a.slug,
+    title: a.title,
+    description: a.description,
+    track: a.track,
+    hasContent: Boolean(a.body),
+  }));
+
   return (
     <>
-      <PageHero
+      <Hero
         eyebrow="Education Hub"
         title="Learn the terms, tactics, and rights that matter."
-        description="Articles will be organized by track below."
+        description="Filter by track, or browse everything below. New articles are added regularly."
       />
-      <Container className="pb-16">
-        <PlaceholderNotice note="Individual articles will be added under each track in a later step." />
-
-        <div className="mt-8 grid gap-6 sm:grid-cols-3">
-          {tracks.map((t) => (
-            <div key={t.key} className="rounded border border-slate-300 p-5">
-              <h2 className="font-semibold">{t.label}</h2>
-              <p className="mt-2 text-sm text-slate-600">Articles coming soon.</p>
-            </div>
-          ))}
-        </div>
-      </Container>
+      <Section tone="paper">
+        <ArticleFilter articles={summaries} />
+      </Section>
     </>
   );
 }
