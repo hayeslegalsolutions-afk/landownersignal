@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Container } from "@/components/container";
-import { Button } from "@/components/ui/button";
 import { TrackTag } from "@/components/ui/track-tag";
 import { ProductCover } from "@/components/shop/product-cover";
+import { ProductActions } from "@/components/shop/product-actions";
 import { getProductBySlug, products, type ProductType } from "@/lib/products";
 
 const FORMAT_LABELS: Record<ProductType, { label: string; detail: string }> = {
@@ -68,17 +68,9 @@ export default async function ProductPage({
             <span className="font-semibold text-ink">{format.label}</span> — {format.detail}
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button variant="primary" disabled>
-              Buy Now
-            </Button>
-            <Button variant="secondary" disabled>
-              Add to Cart
-            </Button>
+          <div className="mt-6">
+            <ProductActions product={product} />
           </div>
-          <p className="mt-2 text-xs text-ink-muted">
-            Checkout isn&apos;t connected yet — this is a preview of the product page.
-          </p>
         </div>
       </div>
 

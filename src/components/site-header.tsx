@@ -4,10 +4,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { Container } from "@/components/container";
 import { SignalMark } from "@/components/ui/signal-mark";
+import { useCart } from "@/lib/cart/cart-context";
 import { primaryNav, secondaryNav, siteConfig } from "@/lib/site";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const { itemCount, hydrated } = useCart();
+  const showCount = hydrated && itemCount > 0;
 
   return (
     <header className="border-b border-line bg-paper">
@@ -41,6 +44,17 @@ export function SiteHeader() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/shop/cart"
+            className="flex items-center gap-1.5 text-sm font-semibold text-ink hover:text-brand"
+          >
+            Cart
+            {showCount && (
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-brand px-1 text-xs font-semibold text-white">
+                {itemCount}
+              </span>
+            )}
+          </Link>
         </nav>
 
         <button
@@ -78,6 +92,13 @@ export function SiteHeader() {
                 {link.label}
               </Link>
             ))}
+            <Link
+              href="/shop/cart"
+              className="rounded px-2 py-2 text-sm font-semibold text-ink hover:bg-paper-tint"
+              onClick={() => setOpen(false)}
+            >
+              Cart{showCount ? ` (${itemCount})` : ""}
+            </Link>
           </Container>
         </div>
       )}
