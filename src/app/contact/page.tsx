@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 const CONTACT_EMAIL = "hayeslegalsolutions@hayeslegalsolutions.com";
+const CONTACT_PHONE = "405-594-7943";
 
 export default function ContactPage() {
   return (
@@ -31,6 +32,12 @@ export default function ContactPage() {
               className="mt-3 inline-block text-sm font-semibold text-brand hover:underline"
             >
               {CONTACT_EMAIL}
+            </a>
+            <a
+              href={`tel:+1${CONTACT_PHONE.replace(/-/g, "")}`}
+              className="mt-2 block text-sm font-semibold text-brand hover:underline"
+            >
+              {CONTACT_PHONE}
             </a>
             <p className="mt-6 text-sm leading-6 text-ink-muted">
               We typically respond within one business day. For a document review, starting
