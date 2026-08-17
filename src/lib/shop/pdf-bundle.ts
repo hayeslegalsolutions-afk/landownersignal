@@ -13,11 +13,16 @@ export async function buildChecklistBundle(pdfItems: FulfillmentItem[]): Promise
   const bundle = await PDFDocument.create();
 
   for (const item of pdfItems) {
-    const filePath = path.join(SOURCE_DIR, `${item.product.slug}.pdf`);
-    const bytes = await readFile(filePath);
-    const source = await PDFDocument.load(bytes);
-    const pages = await bundle.copyPages(source, source.getPageIndices());
-    pages.forEach((page) => bundle.addPage(page));
+    const filePaths = item.product.files
+      ? item.product.files.map((file) => path.join(SOURCE_DIR, item.product.slug, file))
+      : [path.join(SOURCE_DIR, `${item.product.slug}.pdf`)];
+
+    for (const filePath of filePaths) {
+      const bytes = await readFile(filePath);
+      const source = await PDFDocument.load(bytes);
+      const pages = await bundle.copyPages(source, source.getPageIndices());
+      pages.forEach((page) => bundle.addPage(page));
+    }
   }
 
   return bundle.save();

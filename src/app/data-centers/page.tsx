@@ -53,6 +53,14 @@ const tactics = [
   },
 ];
 
+const bookHighlights = [
+  "Distinguish an option, purchase agreement, ground lease, and easement",
+  "Identify economic terms beyond the headline price — escalation, bonuses, restoration obligations",
+  "Ask informed questions about power, substations, water, and decommissioning",
+  "Understand what a nondisclosure agreement actually commits you to",
+  "Know when the document in front of you is important enough to call a lawyer",
+];
+
 const steps = [
   {
     title: "Review your offer or lease",
@@ -133,6 +141,53 @@ export default function DataCentersPage() {
               <p className="mt-2 text-sm leading-6 text-ink-muted">{step.body}</p>
             </div>
           ))}
+        </div>
+      </Section>
+
+      <Section tone="tint">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand">
+              New book
+            </p>
+            <h2 className="mt-2 font-serif text-2xl font-semibold text-ink sm:text-3xl">
+              The Landowner&apos;s Guide to AI Data Centers
+            </h2>
+            <p className="mt-2 text-sm font-semibold text-ink-muted">
+              By Amy Hayes — an Oklahoma-licensed attorney
+            </p>
+            <p className="mt-4 text-sm leading-6 text-ink-muted">
+              A landowner usually doesn&apos;t wake up expecting a data-center developer to
+              call. But when the letter, the broker, or the survey request arrives, the
+              company on the other end may already know far more about the deal than the
+              landowner does. This book was written to close that gap — a plain-English
+              walkthrough of options and site-control agreements, NDAs, compensation
+              structures, power and water commitments, decommissioning, and the tactics that
+              show up again and again in real data-center land deals.
+            </p>
+            <p className="mt-4 text-sm leading-6 text-ink-muted">
+              Available now on Amazon in paperback and Kindle.
+            </p>
+          </div>
+          <Card className="border-brand/20 bg-white">
+            <p className="font-serif text-lg italic leading-7 text-ink">
+              &ldquo;Do not evaluate a data-center offer as though it were an ordinary farm
+              sale or a routine commercial lease. The developer may be buying access to a
+              strategic location, not merely acreage.&rdquo;
+            </p>
+            <p className="mt-4 text-sm text-ink-muted">What the book helps you do:</p>
+            <ul className="mt-2 space-y-2">
+              {bookHighlights.map((h) => (
+                <li key={h} className="flex items-start gap-2 text-sm text-ink-muted">
+                  <span
+                    className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
+                    aria-hidden="true"
+                  />
+                  {h}
+                </li>
+              ))}
+            </ul>
+          </Card>
         </div>
       </Section>
 
