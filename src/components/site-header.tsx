@@ -1,14 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Container } from "@/components/container";
 import { SignalMark } from "@/components/ui/signal-mark";
 import { useCart } from "@/lib/cart/cart-context";
 import { primaryNav, secondaryNav, siteConfig } from "@/lib/site";
 
+/** Active for an exact match, or any sub-path (e.g. /oil-gas/mineral-owners under /oil-gas) — except "/", which only matches itself. */
+function isActive(pathname: string, href: string): boolean {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   const { itemCount, hydrated } = useCart();
   const showCount = hydrated && itemCount > 0;
 
@@ -29,7 +37,10 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-semibold text-ink hover:text-brand"
+              aria-current={isActive(pathname, link.href) ? "page" : undefined}
+              className={`text-sm font-semibold transition-colors ${
+                isActive(pathname, link.href) ? "text-brand" : "text-ink hover:text-brand"
+              }`}
             >
               {link.label}
             </Link>
@@ -39,14 +50,20 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-ink-muted hover:text-ink"
+              aria-current={isActive(pathname, link.href) ? "page" : undefined}
+              className={`text-sm transition-colors ${
+                isActive(pathname, link.href) ? "font-semibold text-brand" : "text-ink-muted hover:text-ink"
+              }`}
             >
               {link.label}
             </Link>
           ))}
           <Link
             href="/shop/cart"
-            className="flex items-center gap-1.5 text-sm font-semibold text-ink hover:text-brand"
+            aria-current={pathname === "/shop/cart" ? "page" : undefined}
+            className={`flex items-center gap-1.5 text-sm font-semibold transition-colors ${
+              pathname === "/shop/cart" ? "text-brand" : "text-ink hover:text-brand"
+            }`}
           >
             Cart
             {showCount && (
@@ -75,7 +92,10 @@ export function SiteHeader() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded px-2 py-2 text-sm font-semibold text-ink hover:bg-paper-tint"
+                aria-current={isActive(pathname, link.href) ? "page" : undefined}
+                className={`rounded px-2 py-2 text-sm font-semibold hover:bg-paper-tint ${
+                  isActive(pathname, link.href) ? "text-brand" : "text-ink"
+                }`}
                 onClick={() => setOpen(false)}
               >
                 {link.label}
@@ -86,7 +106,10 @@ export function SiteHeader() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded px-2 py-2 text-sm text-ink-muted hover:bg-paper-tint"
+                aria-current={isActive(pathname, link.href) ? "page" : undefined}
+                className={`rounded px-2 py-2 text-sm hover:bg-paper-tint ${
+                  isActive(pathname, link.href) ? "font-semibold text-brand" : "text-ink-muted"
+                }`}
                 onClick={() => setOpen(false)}
               >
                 {link.label}
@@ -94,7 +117,10 @@ export function SiteHeader() {
             ))}
             <Link
               href="/shop/cart"
-              className="rounded px-2 py-2 text-sm font-semibold text-ink hover:bg-paper-tint"
+              aria-current={pathname === "/shop/cart" ? "page" : undefined}
+              className={`rounded px-2 py-2 text-sm font-semibold hover:bg-paper-tint ${
+                pathname === "/shop/cart" ? "text-brand" : "text-ink"
+              }`}
               onClick={() => setOpen(false)}
             >
               Cart{showCount ? ` (${itemCount})` : ""}

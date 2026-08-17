@@ -23,12 +23,27 @@ const displaySerif = Newsreader({
   style: ["normal", "italic"],
 });
 
+const defaultTitle = `${siteConfig.name} | Lease & Offer Review for Texas & Oklahoma Landowners`;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(`https://${siteConfig.domain}`),
   title: {
-    default: `${siteConfig.name} | Lease & Offer Review for Texas & Oklahoma Landowners`,
+    default: defaultTitle,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  openGraph: {
+    type: "website",
+    siteName: siteConfig.name,
+    title: defaultTitle,
+    description: siteConfig.description,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: defaultTitle,
+    description: siteConfig.description,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

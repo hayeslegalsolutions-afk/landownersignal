@@ -76,6 +76,30 @@ export default function OilGasHubPage() {
           </Button>
         </div>
       </Section>
+
+      <Section tone="brand">
+        <div className="flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
+          <div>
+            <h2 className="font-serif text-2xl font-semibold sm:text-3xl">
+              Ready to understand your offer?
+            </h2>
+            <p className="mt-2 max-w-xl text-white/70">
+              Pick what applies to you and get started — it only takes a few minutes.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Button href="/oil-gas/mineral-owners" variant="inverse">
+              Mineral Owners
+            </Button>
+            <Button href="/oil-gas/surface-owners" variant="inverse">
+              Surface Owners
+            </Button>
+            <Button href="/oil-gas/inherited-minerals" variant="inverse">
+              Inherited Minerals
+            </Button>
+          </div>
+        </div>
+      </Section>
     </>
   );
 }
